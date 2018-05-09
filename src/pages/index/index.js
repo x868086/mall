@@ -9,7 +9,10 @@ import {InfiniteScroll} from 'mint-ui'
 Vue.use(InfiniteScroll)
 
 //导入单页面组件Foot.vue
-import foot from 'components/Foot.vue'
+import Foot from 'components/Foot.vue';
+
+//导入轮播单页面组件swipe.vue
+import Swipe from 'components/Swipe.vue';
 
 
 
@@ -23,12 +26,15 @@ new Vue({
        pageNum:1,
        pageSize:6,
        loading:false,
-       allLoaded:false
+       allLoaded:false,
+       bannerLists:null
    },
    //tips0:生命周期created时调用methods定义的方法即请求数据，因为这时候已经可以拿到创建的vue实例的this了
    created(){
-    this.getLists()
+    this.getLists();
+    this.getBannerLists();
    },
+
    methods:{
        //tips1:将加载数据的过程抽象成一个方法，这样可反复调用而不用重写
        getLists:function(){
@@ -60,10 +66,18 @@ new Vue({
                 this.pageNum++;
                     
             })
+       },
+
+       getBannerLists:function(){
+           axios.get(url.bannerLists).then(res=>{
+            this.bannerLists=res.data.lists
+           })
        }
    },
    components:{
-       foot:foot
+       //注册组件后才能使用
+       Foot:Foot,
+       Swipe:Swipe
    }
 
 })

@@ -1,7 +1,8 @@
-let hosts='http://rapapi.org/mockjsdata/23334'; //这里是开发环境下的模拟hosts
+let hosts='http://rapapi.org/mockjsdata/24170'; //这里是开发环境下的模拟hosts
 // let hosts='' 这里可以先定义好生产环境下的真实hosts地址,上线是直接注释上面的开发环境地址，使用这个真实地址
 let url={
-    hotLists:'/index/hotLists'
+    hotLists:'/index/hotLists',
+    bannerLists:'/index/banner'
 }
 
 
