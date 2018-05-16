@@ -3,7 +3,7 @@
         <div class="swiper-wrapper">
             <div class="swp-page swiper-slide" v-for="(list,idx) in lists">
                 <a class="js-no-follow" v-bind:href="list.clickUrl">
-                    <img class="goods-main-photo fadeIn" v-bind:src="list.image">
+                    <img class="goods-main-photo fadeIn" v-bind:src="list.img">
                 </a>
             </div>
         </div>

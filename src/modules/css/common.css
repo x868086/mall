@@ -689,7 +689,7 @@ only screen and (min-device-pixel-ratio:1.5) {
 }
 
 .fullscreen-guide.hide {
-  display: none
+  /* display: none */
 }
 
 .fullscreen-guide .guide-close {

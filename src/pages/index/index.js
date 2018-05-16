@@ -71,6 +71,7 @@ new Vue({
        getBannerLists:function(){
            axios.get(url.bannerLists).then(res=>{
             this.bannerLists=res.data.lists
+            console.log(res.data.lists)
            })
        }
    },

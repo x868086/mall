@@ -2,16 +2,61 @@
 <!--将原来底部导航的html移动到此处-->
     <div class="bottom-nav">
         <ul>
-        <li class="active"><a href="index.html"><i class="icon-home"></i><div>有赞</div></a></li>
-        <li><a href="https://maijia.youzan.com/mars/category"><i class="icon-category"></i><div>分类</div></a></li>
-        <li><a href="https://h5.youzan.com/v2/trade/cart?f_platform=yzapp&amp;source=yzapp"><i class="icon-cart"></i><div>购物车</div></a></li>
-        <li><a href="https://h5.youzan.com/v2/buyer/member"><i class="icon-user"></i><div>我</div></a></li>
+        <li v-bind:class="{active:index==curIndex}" 
+        v-for="(list,index) in navConfig"
+        v-on:click="changeIndex(list,index)">
+        <a>
+          <i v-bind:class="list.icon"></i><div>{{list.name}}</div></a>
+        </li>
+        <!-- <li><a href="category.html"><i class="icon-category"></i><div>分类</div></a></li>
+        <li><a href="cart.html"><i class="icon-cart"></i><div>购物车</div></a></li>
+        <li><a href="member.html"><i class="icon-user"></i><div>我</div></a></li> -->
         </ul>
     </div>
 </template>
 
 
 <script>
+  import qs from 'qs';
+  let {queryIndex}= qs.parse(location.search.substr(1))
+
+
+  let navConfig=[
+    {
+      name:'有赞',
+      icon:'icon-home',
+      href:'index.html'
+    },
+    {
+      name:'分类',
+      icon:'icon-category',
+      href:'category.html'
+    },
+    {
+      name:'购物车',
+      icon:'icon-cart',
+      href:'cart.html'
+    },
+    {
+      name:'我',
+      icon:'icon-user',
+      href:'member.html'
+    }
+  ]
+
+  export default {
+    data:function(){
+      return {
+        navConfig:navConfig,
+        curIndex:parseInt(queryIndex) || 0
+      }
+    },
+    methods:{
+      changeIndex:function(list,value){
+        location.href=`${list.href}?queryIndex=${value}`
+      }
+    }
+  }
 </script>
 
 
@@ -23,7 +68,7 @@
   height: 50px;
   bottom: 0;
   background-color: #fff;
-  z-index: 8;
+  z-index:999;
   -o-border-image: url(https://b.yzcdn.cn/v2/image/wap/border-line-2.png) 2 stretch;
   border-image: url(https://b.yzcdn.cn/v2/image/wap/border-line-2.png) 2 stretch;
   border-top: 2px solid #e5e5e5
