@@ -7,6 +7,8 @@ let url={
     rank:'/category/rank',
     subLists:'/category/subList',
     searchList:'/search/list',
+    getDetails:'/goods/details',
+    getDeal:'/goods/deal'
 
 }
 
