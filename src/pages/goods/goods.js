@@ -5,6 +5,7 @@ import "./goods.css";
 import "./goods_theme.css";
 import "./goods_mars.css";
 import "./goods_sku.css";
+import "./goods_transition.css";
 
 import Vue from "vue";
 import axios from "axios";
@@ -12,6 +13,8 @@ import url from "js/api.js";
 import qs from "qs";
 
 import mixin from "js/mixin.js";
+
+import Swipe from 'components/Swipe.vue';
 
 
  let {id}=qs.parse(location.search.substr(1));
@@ -28,7 +31,10 @@ new Vue({
         detailsList:null,
         curIndex:0,
         tabContent:tabContent,
-        sellList:null
+        sellList:null,
+        bannerLists:[],
+        showSku:false,
+        skuIndex:1
     },
 
     methods:{
@@ -36,6 +42,13 @@ new Vue({
             /*这里向后台传递的参数id，是要通过qs模块从url地址栏中获取*/
             axios.post(url.getDetails,{id}).then(res=>{
                 this.detailsList=res.data.data
+                res.data.data.imgs.forEach((e,i,a)=>{
+                    console.log(e)
+                    this.bannerLists.push({
+                        clickUrl:"",
+                        img:e
+                    })
+                })
             }).catch(res=>{
                 console.log('getDetails error')
             })
@@ -52,11 +65,32 @@ new Vue({
             }).catch(res=>{
                 console.log('sellList error')
             })
+        },
+        changeSkuIndex:function(value){
+            this.skuIndex=value;
+            this.showSku=true;
         }
     },
 
-    components:{
+    watch:{
+        showSku(val,oldval){
+            if(val){
+                document.body.style.overflow="hidden"
+                document.body.style.height="100%"
+                document.querySelector("html").style.overflow="hidden"
+                document.querySelector("html").style.height="100%"
 
+            } else if(!val){
+                document.body.style.overflow="auto"
+                document.body.style.height="auto"
+                document.querySelector("html").style.overflow="auto"
+                document.querySelector("html").style.height="auto"
+            }
+        } 
+    },
+
+    components:{
+        Swipe:Swipe
     },
 
     mixins:[mixin]

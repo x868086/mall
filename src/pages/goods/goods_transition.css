@@ -1,0 +1,17 @@
+.sku-enter-active{
+    transition:all 0.5s ease;
+    transform:translateY(0%)
+}
+
+.sku-leave-active{
+    transition:all 0.5s ease;
+    transform:translateY(100%)
+}
+
+.sku-enter{
+    transform:translateY(100%)
+}
+
+.sku-leave{
+    transform:translateY(0%)
+}

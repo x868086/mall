@@ -31,7 +31,7 @@
       <div class="container with-bottom-nav" style="min-height: 667px;">
           <div class="content">
               <!--组件的props属性lists的值，是由根组件定义的bannerLists属性传入的，props down -->
-              <swipe v-bind:lists="bannerLists"></swipe>
+              <swipe v-bind:lists="bannerLists" name="swipe.vue" v-if="bannerLists"></swipe>
 
             <div class="section-title">优店推荐</div>
             <div class="section-content shops">

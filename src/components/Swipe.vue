@@ -7,6 +7,7 @@
                 </a>
             </div>
         </div>
+        <div class="swiper-pagination"></div>
     </div>
 </template>
 
@@ -18,7 +19,7 @@ export default {
     name:'swipe',
     props:{
         lists:{
-            // type:Array,
+            type:Array,
             required:true
         }
     },
@@ -28,11 +29,14 @@ export default {
     init() {
       new Swiper('.swiper-container', {
         loop: true,
-        pagination: '.swiper-pagination'
+        pagination: {
+            el:'.swiper-pagination'
+        }
       })
     }
     },
        mounted(){
+        this.init() 
            //初始条件lists为null，无法渲染dom
     console.log('mounted: ' ,document.querySelectorAll('.js-no-follow'))
    },
@@ -53,7 +57,7 @@ export default {
            this.$nextTick(function(){
               console.log('next: ' ,document.querySelectorAll('.js-no-follow')) 
               //watch检测单个属性更新后可用$nextTick()立即渲染DOM
-              this.init() 
+            //   this.init() 
            })
        }
    },
@@ -65,7 +69,10 @@ export default {
 
 
 <style>
-
+.swiper-slide img {
+  width: 100%;
+  height: 100%;
+}
 </style>
 
 
