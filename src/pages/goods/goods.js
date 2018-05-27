@@ -76,15 +76,8 @@ new Vue({
         showSku(val,oldval){
             if(val){
                 document.body.style.overflow="hidden"
-                document.body.style.height="100%"
-                document.querySelector("html").style.overflow="hidden"
-                document.querySelector("html").style.height="100%"
-
             } else if(!val){
                 document.body.style.overflow="auto"
-                document.body.style.height="auto"
-                document.querySelector("html").style.overflow="auto"
-                document.querySelector("html").style.height="auto"
             }
         } 
     },
