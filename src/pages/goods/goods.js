@@ -28,13 +28,17 @@ new Vue({
     },
 
     data:{
+        id:id,
         detailsList:null,
         curIndex:0,
         tabContent:tabContent,
         sellList:null,
         bannerLists:[],
         showSku:false,
-        skuIndex:1
+        skuIndex:1,
+        skuNumber:1,
+        inCart:false,
+        inCartMessage:false
     },
 
     methods:{
@@ -69,15 +73,36 @@ new Vue({
         changeSkuIndex:function(value){
             this.skuIndex=value;
             this.showSku=true;
+        },
+        changeSkuNumber:function(value){
+            if(value<0&&this.skuNumber===1){
+                return
+            }
+            this.skuNumber+=value;
+        },
+        getCart:function(){
+            axios.post(url.getCart,{
+                id:this.id,
+                number:this.skuNumber
+            }).then(res=>{
+                if(res.status===200){
+                    this.inCart=true;
+                    this.inCartMessage=true;
+                    this.showSku=false;
+                }
+                setTimeout(res=>{
+                    this.inCartMessage=false;
+                },1000)
+            })
         }
     },
 
     watch:{
         showSku(val,oldval){
             if(val){
-                document.body.style.overflow="hidden"
+                document.body.style.overflow="hidden";
             } else if(!val){
-                document.body.style.overflow="auto"
+                document.body.style.overflow="auto";
             }
         } 
     },

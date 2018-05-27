@@ -8,7 +8,8 @@ let url={
     subLists:'/category/subList',
     searchList:'/search/list',
     getDetails:'/goods/details',
-    getDeal:'/goods/deal'
+    getDeal:'/goods/deal',
+    getCart:'/cart/add'
 
 }
 
