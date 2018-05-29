@@ -9,8 +9,12 @@ let url={
     searchList:'/search/list',
     getDetails:'/goods/details',
     getDeal:'/goods/deal',
-    getCart:'/cart/add'
-
+    getCart:'/cart/add',
+    getCartList:'/cart/list',
+    cartUpdate:'/cart/update',
+    cartReduce:'/cart/reduce',
+    cartRemove:'/cart/remove',
+    cartMrremove:'/cart/mrremove'
 }
 
 
