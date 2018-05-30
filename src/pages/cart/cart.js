@@ -10,7 +10,8 @@ import mixin from 'js/mixin.js';
 new Vue({
     el:".container",
     data:{
-        cartList:null
+        cartList:null,
+        shopEdit:false
     },
     computed:{
         totalSelector:{
@@ -66,7 +67,10 @@ new Vue({
             axios.post(url.getCartList).then(res=>{
                 let lists=res.data.cartList;
                 lists.forEach(shop=>{
-                    shop.checked=true
+                    shop.checked=true;
+                    //数据拉取后增加店铺标记状态
+                    shop.editing=false;
+                    shop.editingMsg="编辑";
                     shop.goodsList.forEach(goods=>{
                         goods.checked=true;
                     })
@@ -92,8 +96,35 @@ new Vue({
                 goods.checked=shop.checked
             })
         },
+        
         allChecked:function(){
             this.totalSelector=!this.totalSelector
+        },
+
+        edit:function(shop,shopIndex){
+            shop.editing=!shop.editing;
+            this.shopEdit=shop.editing
+            //一个店铺处于编辑状态时，遍历拉取的所有数据的店铺，将其他店铺编辑状态改成false,其他店铺的编辑状态信息
+            //根据当前编辑店铺的状态改变，
+            this.cartList.forEach((item,i)=>{
+                if(shopIndex!==i){//编辑店铺的index不等于i即其他店铺
+                    item.editing=false;
+                    item.editingMsg=shop.editing ? "" : "编辑"
+                }
+            })
+            shop.editingMsg=shop.editing ? "完成" : "编辑"
+
+        },
+
+        changeGoods:function(value,goods){
+            //如果修改商品数量传入的是负值且当前商品数量已经是1时return
+            if(goods.number===1&&value<0){
+                return
+            }
+            //修改商品数量传入的是负值即减去，传入正值即加
+            value>0 ? goods.number++ :goods.number--
+
+
         }
     },
     created:function(){

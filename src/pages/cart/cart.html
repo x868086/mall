@@ -40,9 +40,10 @@
                   <span class="check" v-bind:class="{checked:shop.checked}"></span>
                 </div> <a class="shop-title"><i class="custom-store-img">店铺：</i>{{shop.shopTitle}}</a>
                 <a href="javascript:;" data-type="cart" 
-                class="j-edit-list pull-right c-blue font-size-12 edit-list">
+                class="j-edit-list pull-right c-blue font-size-12 edit-list"
+                v-on:click="edit(shop,shopIndex)">
                   <!---->
-                  编辑
+                  {{shop.editingMsg}}
                 </a>
               </div>
               <!---->
@@ -65,7 +66,7 @@
                         <div class="detail">
                           <a v-bind:href="'goods.html?id='+goods.id" class="js-goods-link">
                             <h3 class="title js-ellipsis">
-                              <i>{{goods.title}}</i></h3></a>
+                              <i v-show="!shop.editing">{{goods.title}}</i></h3></a>
                           <p class="sku ellipsis">
                             {{goods.sku}}
                           </p>
@@ -75,14 +76,16 @@
                             <!---->
                           </div>
                           <!-- 编辑状态 -->
-                          <div class="num" style="display: none;">
+                          <div class="num" v-show="shop.editing">
                             <!---->
                             <div class="quantity">
-                              <button type="button" class="minus disabled"></button>
-                              <input type="text" pattern="[0-9]*" class="txt" value="1">
+                              <button type="button" class="minus" v-bind:class="{disabled:goods.number===1}"></button>
+                              <input type="text" pattern="[0-9]*" class="txt" v-model="goods.number">
                               <button type="button" class="plus "></button>
-                              <div class="response-area response-area-minus"></div>
-                              <div class="response-area response-area-plus"></div>
+                              <div class="response-area response-area-minus"
+                              v-on:click="changeGoods(-1,goods)"></div>
+                              <div class="response-area response-area-plus"
+                              v-on:click="changeGoods(1,goods)"></div>
                             </div>
                           </div>
                           <div class="price c-orange">
@@ -90,7 +93,7 @@
                         </div>
                         <div class="error-box"></div>
                       </div>
-                      <div class="delete-btn"><span>删除</span></div>
+                      <div class="delete-btn" v-show="shop.editing"><span>删除</span></div>
                     </div>
                   </li>
                 </ul>
@@ -125,7 +128,7 @@
                       </div>
                       <div class="error-box">商品已售罄</div>
                     </div>
-                    <div class="delete-btn"><span>删除</span></div>
+                    <div class="delete-btn" style="display:none;"><span>删除</span></div>
                   </div>
                 </li>
               </ul>
@@ -156,7 +159,7 @@
               <!-- 编辑状态 -->
               <button href="javascript:;" 
               disabled="disabled" class="j-delete-goods btn font-size-14 btn-red" 
-              style="display: none;">
+              v-show="shopEdit">
               删除
                     </button>
             </div>

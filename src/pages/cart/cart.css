@@ -174,7 +174,8 @@
   display: inline-block;
   vertical-align: middle;
   font-size: 0;
-  position: relative
+  position: relative;
+  right:60px;
 }
 
 .quantity input[type=number]::-webkit-outer-spin-button {
@@ -644,8 +645,8 @@ only screen and (min-device-pixel-ratio: 1.5) {
   font-weight: 100;
   font-size: 12px;
   position: absolute;
-  right: 0;
-  bottom: 0
+  right: 0px;
+  bottom:0px;
 }
 
 .block-list-cart .block-item-cart .name-card .num .quantity .response-area {
@@ -695,7 +696,7 @@ only screen and (min-device-pixel-ratio: 1.5) {
   width: 640px;
   height: 100%;
   position: absolute;
-  right: -640px;
+  right: -581px;
   top: -1px;
   background-color: #ff4343;
   color: #fff;
