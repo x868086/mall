@@ -33,7 +33,33 @@ new Vue({
                     })
                 })
             }
+        },
+        //计算属性，遍历已选中的商品列表，生成选中商品列表数组
+        selectLists:function(){
+            let goodsArr=[]
+            if(this.cartList&&this.cartList.length){
+                this.cartList.forEach(shop=>{
+                    shop.goodsList.forEach(goods=>{
+                        if(goods.checked===true){
+                            goodsArr.push(goods)
+                        }
+                    })
+                })
+            }else{
+                return []
+            }
+            return goodsArr
+
+        },
+        //计算属性，遍历已预选中的商品列表数组，计算总价格
+        totalPrice:function(){
+            let total=0;
+            this.selectLists.forEach(goods=>{
+                total +=goods.price*goods.number
+            })
+            return total
         }
+
     },
     methods:{
         getCartList:function(){
