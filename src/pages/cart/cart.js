@@ -11,7 +11,8 @@ new Vue({
     el:".container",
     data:{
         cartList:null,
-        shopEdit:false
+        shopEdit:false,
+        shopEditIndex:-1
     },
     computed:{
         totalSelector:{
@@ -59,7 +60,31 @@ new Vue({
                 total +=goods.price*goods.number
             })
             return total
+        },
+
+        removeLists:function(){
+
+        },
+
+        totalRemove:{
+            get:function(){
+                if(this.shopEdit){
+                    return this.shopEdit.removeChecked
+                }
+                return false
+            },
+            set:function(newval){
+                if(this.shopEdit){
+                    this.shopEdit.removeChecked=newval;
+                    this.shopEdit.goodsList.forEach(goods=>{
+                        goods.removeChecked=newval
+                    })
+                }
+
+            }
         }
+
+
 
     },
     methods:{
@@ -67,12 +92,14 @@ new Vue({
             axios.post(url.getCartList).then(res=>{
                 let lists=res.data.cartList;
                 lists.forEach(shop=>{
-                    shop.checked=true;
                     //数据拉取后增加店铺标记状态
+                    shop.checked=true;
+                    shop.removeChecked=false;
                     shop.editing=false;
                     shop.editingMsg="编辑";
                     shop.goodsList.forEach(goods=>{
                         goods.checked=true;
+                        goods.removeChecked=false;
                     })
                 })
 
@@ -81,38 +108,45 @@ new Vue({
                 console.log('getCartList error')
             })
         },
-        // 每次点击商品的时候遍历当前商品所属的店铺，其店铺下的所有商品是否被选中，即商品的checked是否为true,every方法
+        // 每次点击商品的时候先确定是否是编辑状态，然后遍历当前商品所属的店铺，其店铺下的所有商品是否被选中，
+        //即商品的checked或removeChecked是否为true,every方法
         selectGoods:function(shop,goods){
-            goods.checked=!goods.checked
-        // every遍历的结果赋值给shop.checked,当每个商品都被选中时返回true，此时shop.checked为true
-            shop.checked=shop.goodsList.every(good=>{
-                return good.checked
+            let attr=this.shopEdit?'removeChecked':'checked'
+            goods[attr]=!goods[attr]
+        // every遍历的结果赋值给shop.checked,当每个商品都被选中时返回true，此时shop.checked或shop.removeChecked为true
+            shop[attr]=shop.goodsList.every(good=>{
+                return good[attr]
             })
         },
-        // 每次点击店铺的时候，遍历店铺下的所有商品，改变所有商品的checked状态，商品的状态与店铺的选中状态保持一致
+        // 每次点击店铺的时候，先确定是否是编辑状态，然后遍历店铺下的所有商品，
+        //改变所有商品的checked或removeChecked状态，商品的状态与店铺的选中状态保持一致
         selectShop:function(shop){
-            shop.checked=!shop.checked
+            let attr=this.shopEdit?'removeChecked':'checked'
+            shop[attr]=!shop[attr]
             shop.goodsList.forEach(goods=>{
-                goods.checked=shop.checked
+                goods[attr]=shop[attr]
             })
         },
         
         allChecked:function(){
-            this.totalSelector=!this.totalSelector
+            let attr=this.shopEdit?'totalRemove':'totalSelector'
+            this[attr]=!this[attr]
         },
 
         edit:function(shop,shopIndex){
             shop.editing=!shop.editing;
-            this.shopEdit=shop.editing
             //一个店铺处于编辑状态时，遍历拉取的所有数据的店铺，将其他店铺编辑状态改成false,其他店铺的编辑状态信息
             //根据当前编辑店铺的状态改变，
             this.cartList.forEach((item,i)=>{
                 if(shopIndex!==i){//编辑店铺的index不等于i即其他店铺
                     item.editing=false;
-                    item.editingMsg=shop.editing ? "" : "编辑"
+                    item.editingMsg=shop.editing ? "" : "编辑";
                 }
             })
-            shop.editingMsg=shop.editing ? "完成" : "编辑"
+            //当前被编辑的店铺来自点击当前店铺时其店铺的editing状态，如果是editing状态则店铺就是当前店铺
+            this.shopEdit=shop.editing? shop: null;
+            this.shopEditIndex=shop.editing? shopIndex : -1;
+            shop.editingMsg=shop.editing ? "完成" : "编辑";
 
         },
 

@@ -37,7 +37,10 @@
               <div class="header">
                 <div class="select-group js-select-group"
                 v-on:click="selectShop(shop)">
-                  <span class="check" v-bind:class="{checked:shop.checked}"></span>
+                  <span class="check" v-bind:class="{checked:shop.checked}"
+                  v-show="!shopEdit"></span>
+                  <span class="check" v-bind:class="{checked:shop.removeChecked}"
+                  v-show="shopEdit"></span>
                 </div> <a class="shop-title"><i class="custom-store-img">店铺：</i>{{shop.shopTitle}}</a>
                 <a href="javascript:;" data-type="cart" 
                 class="j-edit-list pull-right c-blue font-size-12 edit-list"
@@ -54,7 +57,14 @@
                     <div>
                       <div class="check-container" v-on:click="selectGoods(shop,goods)">
                         <!-- 商品列表选中,每次选中商品的时候把当前商品的店铺shop也传入 -->
-                        <span class="check" v-bind:class="{checked:goods.checked}"></span>
+                        <span class="check" 
+                        v-bind:class="{checked:goods.checked}"
+                        v-show="!shopEdit"
+                        ></span>
+                        <span class="check" 
+                        v-bind:class="{checked:goods.removeChecked}"
+                        v-show="shopEdit"
+                        ></span>
                       </div>
                       <div class="name-card clearfix">
                         <a v-bind:href="'goods.html?id'+goods.id" class="thumb js-goods-link">
@@ -143,12 +153,20 @@
             </div>
             <div class="bottom-cart clear-fix">
               <div class="select-all" v-on:click="allChecked">
-                <span class="check" v-bind:class="{checked:totalSelector}">
-                </span> 全选
+                <!-- 三元运算，如果有shopEdit时看totalRemove是否是true,如果没有shopEdit时看totalSelector是否满足 -->
+                <span class="check" 
+                v-bind:class="{checked:totalSelector}"
+                v-show="!shopEdit">
+                </span> 
+                <span class="check" 
+                v-bind:class="{checked:totalRemove}"
+                v-show="shopEdit">
+                </span> 
+                全选
               </div>
               <!-- 显示状态 -->
-              <div class="total-price">
-                合计：¥<span class="js-total-price" style="color: rgb(255, 102, 0);">{{totalPrice}}</span>
+              <div class="total-price" v-show="!shopEdit">
+                合计：¥<span class="js-total-price" style="color: rgb(255, 102, 0);"></span>{{totalPrice}}</span>
                 <p class="c-gray-dark">不含运费</p>
               </div>
               <button href="javascript:;" class="js-go-pay btn btn-orange-dark font-size-14"
