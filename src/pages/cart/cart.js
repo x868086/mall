@@ -172,13 +172,13 @@ new Vue({
             //修改商品数量传入的是负值即减去，传入正值即加
             let number=goods.number
             if(value>0){
+                //仅当异步请求成功才改本地的goods.number
                 axios.post(url.cartAdd,{id:goods.id,number:number += 1}).then(res=>{
                     goods.number++;
                 }).catch(res=>{
                     console.log('cartAdd error!')
                 })
             } else if(value<0){
-
                 axios.post(url.cartReduce,{id:goods.id,number:number -= 1}).then(res=>{
                     goods.number--;
                 }).catch(res=>{
