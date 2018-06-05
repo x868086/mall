@@ -12,7 +12,10 @@ new Vue({
     data:{
         cartList:null,
         shopEdit:false,
-        shopEditIndex:-1
+        shopEditIndex:-1,
+        removeMsg:"确定要删除该商品?",
+        removePopup:false,
+        removeData:null
     },
     computed:{
         totalSelector:{
@@ -186,39 +189,58 @@ new Vue({
                 })
             }
         },
-
-        remove(shop,shopIndex,goods,goodsIndex){
-            this.removeLists.splice(goodsIndex,1)
-            this.cartList[shopIndex].goodsList.splice(goodsIndex,1)
-            this.cartList.forEach(shop=>{
-                if(shop.editing&&shop.goodsList.length===0){
-                    this.cartList.splice(shopIndex,1)
-                    this.cartList.forEach(shop=>{
-                        shop.editing=false;
-                        shop.editingMsg="编辑";
-                        this.shopEdit=null;
-                        this.shopEditIndex=-1;
-                    })
-                }
-            })
+        //点击商品的删除按钮后保存当前删除商品的所在店铺，店铺序号，商品，商品序号等信息
+        remove:function(shop,shopIndex,goods,goodsIndex){
+            this.removePopup=true;
+            this.removeData={shop,shopIndex,goods,goodsIndex}
         },
+        //点击底部全部删除时修改弹出层提示信息
+        removeAll:function(){
+            this.removePopup=true;
+            this.removeMsg=`确定要删除${this.removeLists.length}项商品?`
+        },
+        //在删除确认界面，操作remove方法中保存的删除信息
+        removeConfirm:function(){
+            if(this.removeMsg==="确定要删除该商品?"){
+                let {shop,shopIndex,goods,goodsIndex}=this.removeData
+                axios.post(url.cartRemove,{id:goods.id}).then(res=>{
+                    shop.goodsList.splice(goodsIndex,1)
+                    this.removePopup=false;
+                    if(shop.goodsList.length===0){
+                        this.removeShop()
+                    }
+                }).catch(res=>{
+                    console.log('remove error!')
+                })
+            } else{
+                this.cartList.forEach((shop,i)=>{
+                    if(shop.editing){
+                        this.cartList.splice(i,1)
+                        this.removePopup=false
+                    }
+                })
 
-        removeShop(){
-            this.removeLists.splice(1,-1);
-            this.cartList.forEach((shop,shopIndex)=>{
-                if(shop.editing){
-                    this.cartList.splice(shopIndex,1)
-                }
+                this.cartList.forEach(shop=>{
+                    shop.editing=false;
+                    shop.editingMsg="编辑";
+                })
                 this.shopEdit=null;
                 this.shopEditIndex=-1;
-            })
-            //this.cartList在splice后改变过，所以要再次遍历增加编辑状态
+            }
+
+        },
+        removeShop:function(){
+            let {shop,shopIndex,goods,goodsIndex}=this.removeData
+            this.cartList.splice(shopIndex,1)
             this.cartList.forEach(shop=>{
                 shop.editing=false;
                 shop.editingMsg="编辑";
             })
+            this.shopEdit=null;
+            this.shopEditIndex=-1;
+        },
 
-        }
+
     },
     created:function(){
         this.getCartList()
