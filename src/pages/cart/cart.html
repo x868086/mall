@@ -37,10 +37,10 @@
               <div class="header">
                 <div class="select-group js-select-group"
                 v-on:click="selectShop(shop)">
-                  <span class="check" v-bind:class="{checked:shop.checked}"
-                  v-show="!shopEdit"></span>
-                  <span class="check" v-bind:class="{checked:shop.removeChecked}"
-                  v-show="shopEdit"></span>
+                <!-- 店铺选择按钮选中状态由是否存在编辑店铺决定 -->
+                  <span class="check" 
+                  v-bind:class="{checked:shopEdit ? shop.removeChecked : shop.checked}"
+                  ></span>
                 </div> <a class="shop-title"><i class="custom-store-img">店铺：</i>{{shop.shopTitle}}</a>
                 <a href="javascript:;" data-type="cart" 
                 class="j-edit-list pull-right c-blue font-size-12 edit-list"
@@ -58,12 +58,7 @@
                       <div class="check-container" v-on:click="selectGoods(shop,goods)">
                         <!-- 商品列表选中,每次选中商品的时候把当前商品的店铺shop也传入 -->
                         <span class="check" 
-                        v-bind:class="{checked:goods.checked}"
-                        v-show="!shopEdit"
-                        ></span>
-                        <span class="check" 
-                        v-bind:class="{checked:goods.removeChecked}"
-                        v-show="shopEdit"
+                        v-bind:class="{checked:shopEdit ? goods.removeChecked : goods.checked}"
                         ></span>
                       </div>
                       <div class="name-card clearfix">
@@ -155,12 +150,7 @@
               <div class="select-all" v-on:click="allChecked">
                 <!-- 三元运算，如果有shopEdit时看totalRemove是否是true,如果没有shopEdit时看totalSelector是否满足 -->
                 <span class="check" 
-                v-bind:class="{checked:totalSelector}"
-                v-show="!shopEdit">
-                </span> 
-                <span class="check" 
-                v-bind:class="{checked:totalRemove}"
-                v-show="shopEdit">
+                v-bind:class="{checked:shopEdit ? totalRemove : totalSelector}">
                 </span> 
                 全选
               </div>
