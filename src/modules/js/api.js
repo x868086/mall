@@ -9,7 +9,7 @@ let url={
     searchList:'/search/list',
     getDetails:'/goods/details',
     getDeal:'/goods/deal',
-    getCart:'/cart/add',
+    cartAdd:'/cart/add',
     getCartList:'/cart/list',
     cartUpdate:'/cart/update',
     cartReduce:'/cart/reduce',
