@@ -98,7 +98,8 @@
                         </div>
                         <div class="error-box"></div>
                       </div>
-                      <div class="delete-btn" v-show="shop.editing"><span>删除</span></div>
+                      <div class="delete-btn" v-show="shop.editing"
+                      v-on:click="remove(shop,shopIndex,goods,goodsIndex)"><span>删除</span></div>
                     </div>
                   </li>
                 </ul>
@@ -166,8 +167,9 @@
               </button>
               <!-- 编辑状态 -->
               <button href="javascript:;" 
-              disabled="disabled" class="j-delete-goods btn font-size-14 btn-red" 
-              v-show="shopEdit">
+              v-bind:disabled="!totalRemove" class="j-delete-goods btn font-size-14 btn-red" 
+              v-show="shopEdit"
+              v-on:click="removeShop()">
               删除
                     </button>
             </div>

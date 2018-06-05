@@ -38,7 +38,7 @@ new Vue({
         },
         //计算属性，遍历已选中的商品列表，生成选中商品列表数组
         selectLists:function(){
-            let goodsArr=[]
+            let goodsArr=[];
             if(this.cartList&&this.cartList.length){
                 this.cartList.forEach(shop=>{
                     shop.goodsList.forEach(goods=>{
@@ -63,7 +63,21 @@ new Vue({
         },
 
         removeLists:function(){
-
+            let goodsRemoveArr=[];
+            if(this.shopEdit){
+                this.cartList.forEach(shop=>{
+                    if(shop.editing){
+                        shop.goodsList.forEach(goods=>{
+                            if(goods.removeChecked===true){
+                                goodsRemoveArr.push(goods)
+                            }
+                        })
+                    }
+                })
+            } else {
+                return []
+            }
+            return goodsRemoveArr
         },
 
         totalRemove:{
@@ -171,7 +185,38 @@ new Vue({
                     console.log('cartReduce error!')
                 })
             }
+        },
 
+        remove(shop,shopIndex,goods,goodsIndex){
+            this.removeLists.splice(goodsIndex,1)
+            this.cartList[shopIndex].goodsList.splice(goodsIndex,1)
+            this.cartList.forEach(shop=>{
+                if(shop.editing&&shop.goodsList.length===0){
+                    this.cartList.splice(shopIndex,1)
+                    this.cartList.forEach(shop=>{
+                        shop.editing=false;
+                        shop.editingMsg="编辑";
+                        this.shopEdit=null;
+                        this.shopEditIndex=-1;
+                    })
+                }
+            })
+        },
+
+        removeShop(){
+            this.removeLists.splice(1,-1);
+            this.cartList.forEach((shop,shopIndex)=>{
+                if(shop.editing){
+                    this.cartList.splice(shopIndex,1)
+                }
+                this.shopEdit=null;
+                this.shopEditIndex=-1;
+            })
+            //this.cartList在splice后改变过，所以要再次遍历增加编辑状态
+            this.cartList.forEach(shop=>{
+                shop.editing=false;
+                shop.editingMsg="编辑";
+            })
 
         }
     },
