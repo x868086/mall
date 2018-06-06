@@ -5,6 +5,8 @@ import './cart.css';
 import Vue from 'vue';
 import axios from 'axios';
 import url from 'js/api.js';
+import Ajax from 'js/Ajax.js';
+import Cart from 'js/service.js';
 import mixin from 'js/mixin.js';
 
 new Vue({
@@ -14,6 +16,7 @@ new Vue({
         shopEdit:false,
         shopEditIndex:-1,
         removeMsg:"确定要删除该商品?",
+        removeAllConfirm:false,
         removePopup:false,
         removeData:null
     },
@@ -106,7 +109,7 @@ new Vue({
     },
     methods:{
         getCartList:function(){
-            axios.post(url.getCartList).then(res=>{
+            Ajax(url.getCartList,{}).then(res=>{
                 let lists=res.data.cartList;
                 lists.forEach(shop=>{
                     //数据拉取后增加店铺标记状态
@@ -176,17 +179,20 @@ new Vue({
             let number=goods.number
             if(value>0){
                 //仅当异步请求成功才改本地的goods.number
-                axios.post(url.cartAdd,{id:goods.id,number:number += 1}).then(res=>{
-                    goods.number++;
-                }).catch(res=>{
-                    console.log('cartAdd error!')
-                })
+                // Ajax(url.cartAdd,{id:goods.id,number:number += 1}).then(res=>{
+                //     goods.number++;
+                // }).catch(res=>{
+                //     console.log('cartAdd error!')
+                // })
+                //service层封装
+                Cart.add(url.cartAdd,{id:goods.id,number:number += 1},goods)
             } else if(value<0){
-                axios.post(url.cartReduce,{id:goods.id,number:number -= 1}).then(res=>{
-                    goods.number--;
-                }).catch(res=>{
-                    console.log('cartReduce error!')
-                })
+                // Ajax(url.cartReduce,{id:goods.id,number:number -= 1}).then(res=>{
+                //     goods.number--;
+                // }).catch(res=>{
+                //     console.log('cartReduce error!')
+                // })
+                Cart.reduce(url.cartReduce,{id:goods.id,number:number -= 1},goods)
             }
         },
         //点击商品的删除按钮后保存当前删除商品的所在店铺，店铺序号，商品，商品序号等信息
@@ -197,13 +203,18 @@ new Vue({
         //点击底部全部删除时修改弹出层提示信息
         removeAll:function(){
             this.removePopup=true;
-            this.removeMsg=`确定要删除${this.removeLists.length}项商品?`
+            this.removeMsg=`确定要删除${this.removeLists.length}项商品?`;
+            this.removeAllConfirm=true;
+            this.cartList.forEach(shop=>{
+                if(shop.editing&&shop.removeChecked){
+                    this.removeData=shop
+                }
+            })
         },
         //在删除确认界面，操作remove方法中保存的删除信息
         removeConfirm:function(){
-            if(this.removeMsg==="确定要删除该商品?"){
                 let {shop,shopIndex,goods,goodsIndex}=this.removeData
-                axios.post(url.cartRemove,{id:goods.id}).then(res=>{
+                Ajax(url.cartRemove,{id:goods.id}).then(res=>{
                     shop.goodsList.splice(goodsIndex,1)
                     this.removePopup=false;
                     if(shop.goodsList.length===0){
@@ -212,29 +223,31 @@ new Vue({
                 }).catch(res=>{
                     console.log('remove error!')
                 })
-            } else{
-                let arr=[]
-                this.removeLists.forEach(item=>{
-                    arr.push(item.id)
-                })
-                console.log(arr)
-                this.cartList.forEach((shop,i)=>{
-                    if(shop.editing){
-                        this.cartList.splice(i,1)
-                        this.removePopup=false;
-                    }
-                })
-
-                this.cartList.forEach(shop=>{
-                    shop.editing=false;
-                    shop.editingMsg="编辑";
-                })
-                this.shopEdit=null;
-                this.shopEditIndex=-1;
-                this.removeMsg="确定要删除该商品?";
-            }
 
         },
+        
+        allConfirm:function(){
+            this.removeAllConfirm=true;
+            let arr=[]
+            this.removeLists.forEach(item=>{
+                arr.push(item.id)
+            })
+
+            Ajax(url.cartMrremove,{ids:arr}).then(res=>{
+                console.log("异步操作删除所有成功")
+                this.removeShop();
+                this.removePopup=false;
+                this.removeMsg="确定要删除该商品?";
+                this.removeAllConfirm=false;
+            })
+        },
+
+        cancel:function(){
+            this.removePopup=false;
+            this.removeAllConfirm=false;
+            this.removeMsg="确定要删除该商品?";
+        },
+
         removeShop:function(){
             let {shop,shopIndex,goods,goodsIndex}=this.removeData
             this.cartList.splice(shopIndex,1)
@@ -245,7 +258,6 @@ new Vue({
             this.shopEdit=null;
             this.shopEditIndex=-1;
         },
-
 
     },
     created:function(){

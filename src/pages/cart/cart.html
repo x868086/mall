@@ -186,11 +186,16 @@
       <hr style="margin: 9px -15px 10px;">
       <div class="btn-2-1" style="width: 47.5%;">
           <p class="js-cancel center font-size-16" style="padding-top: 5px;"
-          v-on:click="removePopup=false">取消</p>
+          v-on:click="cancel">取消</p>
       </div>
       <div class="btn-2-1" style="width: 47.5%;">
           <p class="js-ok center c-green font-size-16" style="padding-top: 5px;"
+          v-show="!removeAllConfirm"
           v-on:click="removeConfirm">确定</p>
+          <p class="js-ok center c-green font-size-16" style="padding-top: 5px;"
+          v-show="removeAllConfirm"
+          v-on:click="allConfirm"
+          >删除</p>
       </div>
     </div>
   </div>
