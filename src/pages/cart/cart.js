@@ -213,10 +213,15 @@ new Vue({
                     console.log('remove error!')
                 })
             } else{
+                let arr=[]
+                this.removeLists.forEach(item=>{
+                    arr.push(item.id)
+                })
+                console.log(arr)
                 this.cartList.forEach((shop,i)=>{
                     if(shop.editing){
                         this.cartList.splice(i,1)
-                        this.removePopup=false
+                        this.removePopup=false;
                     }
                 })
 
@@ -226,6 +231,7 @@ new Vue({
                 })
                 this.shopEdit=null;
                 this.shopEditIndex=-1;
+                this.removeMsg="确定要删除该商品?";
             }
 
         },
