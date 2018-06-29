@@ -156,9 +156,11 @@ export default {
     },
 
     remove:function(){
-      addressService.remove({id:this.id}).then(res=>{
-        this.$router.push({name:'alladdress'})
-      })
+      if(window.confirm("确认删除地址?")){
+        addressService.remove({id:this.id}).then(res=>{
+          this.$router.push({name:'alladdress'})
+        })
+      }
     },
 
     setDefault:function(){

@@ -33,16 +33,16 @@
 </template>
 
 <script>
-  import AddressService from 'js/addressService.js';
+  // import AddressService from 'js/addressService.js';
 
 export default {
-  data:function(){
-    return {
-      lists:null
+  computed:{
+    lists:function(){
+      return this.$store.state.lists
     }
   },
   created:function(){
-    this.getList()
+    this.$store.dispatch('getAction')
   },
     methods:{
         addEdit:function(list){
@@ -51,13 +51,7 @@ export default {
               type:'edit',
               list:list//点击编辑时传递查询字符串，在查询字符串中传递当前编辑的list
             }})
-        },
-        getList:function(){
-          AddressService.getlist().then(res=>{
-            this.lists=res.data.lists
-          })
         }
-
     }
 }
 </script>
