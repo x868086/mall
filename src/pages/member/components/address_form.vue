@@ -62,16 +62,19 @@
 
 <script>
 import addressData from 'js/address.json';
-import addressService from 'js/addressService.js';
+// import addressService from 'js/addressService.js';
 
 export default {
   data:function(){
     return {
       name: "",
       tel:"",
+      provinceName:"",
       provinceValue: -1,
       address: "",
+      cityName:"",
       cityValue: -1,
+      districtName:"",
       districtValue: -1,
       type:null,
       addressData:addressData.list,
@@ -79,6 +82,12 @@ export default {
       districtList:null,
       instance:null,
       id:""
+    }
+  },
+
+  computed:{
+    lists:function(){
+      return this.$store.state.lists
     }
   },
   
@@ -92,6 +101,10 @@ export default {
       this.tel=data.tel;
       this.address=data.address;
       this.id=data.id;
+      this.cityList=data.cityList;
+      this.cityName=data.cityName;
+      this.districtName=data.districtName;
+      this.provinceName=data.provinceName;
       this.provinceValue=parseInt(data.provinceValue);
       this.cityValue=parseInt(data.cityValue);
       this.districtValue=parseInt(data.districtValue);
@@ -99,23 +112,28 @@ export default {
   },
   
   watch:{
+    lists:function(){
+      this.$router.push({name:'alladdress'})
+    },
     //监测省编码变化，如变化取到市列表
     provinceValue:function(val){
       if(val === -1){
         return
       }
+
       let list=this.addressData;
       let index=list.findIndex(item=>{
           return item.value === val
       })
       this.cityList = list[index].children;
       //取到市列表后将，市、区下拉列表还原成初始值
+      this.provinceName=list[index].label
       this.cityValue = -1;
       this.districtValue = -1;
+      // if(this.type==='edit'){
+      //   this.cityValue=parseInt(this.instance.cityValue);
+      // }
 
-      if(this.type==='edit'){
-        this.cityValue=parseInt(this.instance.cityValue)
-      }
     },
 
     //监测市编码变化，如变化取到区列表
@@ -123,35 +141,48 @@ export default {
       if(val === -1){
         return
       }
+
       let list=this.cityList;
       let index=list.findIndex(item=>{
           return item.value === val
       })
       this.districtList = list[index].children;
       //获取到区列表后，将区下拉列表还原成初始值
+      this.cityName=list[index].label;
       this.districtValue = -1;
+      
+      // if(this.type==='edit'){
+      //   this.districtValue=parseInt(this.instance.districtValue);
+      // }
 
-      if(this.type==='edit'){
-        this.districtValue=parseInt(this.instance.districtValue)
+    },
+
+    districtValue:function(val){
+      if(val === -1){
+        return
       }
+
+      let list=this.districtList;
+      let index=list.findIndex(item=>{
+          return item.value === val;
+      })
+      this.districtName=list[index].label;
     }
   },
   methods:{
     add:function(){
           //Vue 实例也代理 data 对象上所有的属性，因此访问 this.a 等价于访问 this.$data.a
-          let {name,tel,provinceValue,cityValue,districtValue,address} =this.$data;
-          let data={name,tel,provinceValue,cityValue,districtValue,address};
+          let {name,tel,provinceValue,cityValue,districtValue,
+          address,id,provinceName,cityName,districtName} =this.$data;
+          let data={name,tel,provinceValue,cityValue,districtValue,
+          address,id,provinceName,cityName,districtName};
       if(this.type==='add'){
-          addressService.add(data).then(res=>{
-            this.$router.push({name:'alladdress'})
-          })
+          this.$store.dispatch("addAction",data)
       }
 
       if(this.type==='edit'){
-        data.id=this.id
-        addressService.update(data).then(res=>{
-          this.$router.push({name:'alladdress'})
-        })
+
+        this.$store.dispatch("updateAction",data)
       }
     },
 

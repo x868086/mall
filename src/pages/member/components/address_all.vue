@@ -42,7 +42,9 @@ export default {
     }
   },
   created:function(){
-    this.$store.dispatch('getAction')
+    if(!this.lists){
+      this.$store.dispatch('getAction')
+    }
   },
     methods:{
         addEdit:function(list){
