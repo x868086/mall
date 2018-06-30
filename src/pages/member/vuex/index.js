@@ -18,10 +18,23 @@ const store=new Vuex.Store({
             state.lists.push(instance)
         },
         update:function(state,data){
-            let index=state.lists.findIndex(item=>{
+            let arr=JSON.parse(JSON.stringify(state.lists))
+            let index=arr.findIndex(item=>{
                 return item.id===data.id;
             })
-            state.lists[index]=data
+            arr[index]=data;
+            state.lists=arr
+        },
+        remove:function(state,id){
+            let index=state.lists.findIndex(item=>{
+                return item.id===id
+            })
+            state.lists.splice(index,1)
+        },
+        setDefault:function(state,id){
+            state.lists.forEach(item=>{
+                item.id===id?item.isDefault=true:item.isDefault=false;
+            })
         }
     },
     actions:{
@@ -39,6 +52,16 @@ const store=new Vuex.Store({
         updateAction:function(context,data){
             AddressService.update(data).then(res=>{
                 context.commit("update",data)
+            })
+        },
+        removeAction:function(context,id){
+            AddressService.remove(id).then(res=>{
+                context.commit("remove",id)
+            })
+        },
+        setDefaultAction:function(context,id){
+            AddressService.default(id).then(res=>{
+                context.commit("setDefault",id)
             })
         }
     }

@@ -112,8 +112,15 @@ export default {
   },
   
   watch:{
-    lists:function(){
-      this.$router.push({name:'alladdress'})
+    // lists:function(){
+    //   this.$router.push({name:'alladdress'})
+    // },
+    //深度监听
+    lists:{
+      deep:true,
+      handler:function(){
+        this.$router.push({name:'alladdress'})
+      }
     },
     //监测省编码变化，如变化取到市列表
     provinceValue:function(val){
@@ -181,23 +188,18 @@ export default {
       }
 
       if(this.type==='edit'){
-
         this.$store.dispatch("updateAction",data)
       }
     },
 
     remove:function(){
       if(window.confirm("确认删除地址?")){
-        addressService.remove({id:this.id}).then(res=>{
-          this.$router.push({name:'alladdress'})
-        })
+        this.$store.dispatch("removeAction",this.$data.id)
       }
     },
 
     setDefault:function(){
-      addressService.default({id:this.id}).then(res=>{
-        this.$router.push({name:'alladdress'})
-      })
+      this.$store.dispatch("setDefaultAction",this.$data.id)
     }
   }
 }
